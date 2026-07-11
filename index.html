@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do Prompt ao Site — Guia prático para iniciantes</title>
+<meta name="description" content="Como criar e publicar seu primeiro site usando IA, mesmo sem saber programar. Um guia de Lucimara (Lucy), criadora do Achadinhos da Lilu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1330;
+    --ink-soft:#141d42;
+    --blue:#2F5FE0;
+    --blue-light:#7FA0FF;
+    --sky:#EEF3FF;
+    --paper:#FBFBFE;
+    --slate:#545c72;
+    --slate-soft:#8992a8;
+    --mint:#12966E;
+    --mint-bg:#E9F8F2;
+    --coral:#D14A3F;
+    --coral-bg:#FCEEEC;
+    --line: rgba(11,19,48,0.10);
+    --line-dark: rgba(255,255,255,0.14);
+    --radius: 20px;
+    --disp: 'Space Grotesk', sans-serif;
+    --body: 'Source Serif 4', serif;
+    --mono: 'JetBrains Mono', monospace;
+    --maxw: 780px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:18px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; }
+
+  ::selection{ background:var(--blue); color:#fff; }
+
+  /* ---------- progress bar ---------- */
+  .progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--blue),var(--blue-light));
+    z-index:200; transition:width .1s linear;
+  }
+
+  /* ---------- top nav ---------- */
+  .topnav{
+    position:fixed; top:0; left:0; right:0; z-index:150;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px;
+    backdrop-filter:blur(10px);
+    background:rgba(251,251,254,0.78);
+    border-bottom:1px solid var(--line);
+  }
+  .topnav .brand{
+    font-family:var(--mono); font-size:13px; letter-spacing:.04em;
+    font-weight:600; color:var(--ink);
+    display:flex; align-items:center; gap:8px;
+  }
+  .topnav .brand .dot{ width:8px; height:8px; border-radius:50%; background:var(--blue); }
+  .topnav .cta{
+    font-family:var(--mono); font-size:12.5px; font-weight:600;
+    padding:9px 16px; border-radius:100px; background:var(--ink); color:#fff;
+    text-decoration:none; letter-spacing:.02em;
+  }
+
+  section{ position:relative; }
+
+  /* ---------- container ---------- */
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; }
+  .wrap-wide{ max-width:960px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(47,95,224,0.35), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(127,160,255,0.25), transparent 55%),
+      var(--ink);
+    color:#F4F6FF;
+    padding:150px 28px 100px;
+    overflow:hidden;
+  }
+  .hero-grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--blue-light); display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .eyebrow::before{ content:''; width:26px; height:1px; background:var(--blue-light); }
+  .hero h1{
+    font-family:var(--disp); font-weight:700; font-size:clamp(2.6rem,6vw,4.4rem);
+    line-height:1.02; margin:0 0 22px; letter-spacing:-0.02em;
+  }
+  .hero h1 span{ color:var(--blue-light); }
+  .hero p.lede{
+    font-family:var(--body); font-size:1.2rem; color:#C7CEEC; max-width:46ch;
+    margin:0 0 36px;
+  }
+  .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:44px; }
+  .btn{
+    font-family:var(--mono); font-size:13.5px; font-weight:600; letter-spacing:.02em;
+    padding:14px 24px; border-radius:100px; text-decoration:none; display:inline-flex;
+    align-items:center; gap:8px; transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .btn-primary{ background:var(--blue); color:#fff; box-shadow:0 8px 24px -8px rgba(47,95,224,0.7); }
+  .btn-primary:hover{ transform:translateY(-2px); background:#3D6BEE; }
+  .btn-ghost{ background:transparent; color:#F4F6FF; border:1px solid rgba(255,255,255,0.28); }
+  .btn-ghost:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,0.6); }
+
+  /* prompt mock box - signature element */
+  .promptbox{
+    font-family:var(--mono); font-size:13.5px; background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14); border-radius:14px; padding:18px 18px 16px;
+    max-width:520px; backdrop-filter:blur(6px);
+  }
+  .promptbox .head{ display:flex; gap:6px; margin-bottom:14px; }
+  .promptbox .head span{ width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,0.25); }
+  .promptbox .line{ color:#B9C2E8; }
+  .promptbox .line b{ color:#fff; font-weight:600; }
+  .promptbox .cursor{ display:inline-block; width:7px; height:15px; background:var(--blue-light); margin-left:2px; vertical-align:-3px; animation:blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero-cover{ position:relative; }
+  .hero-cover img{
+    border-radius:14px; box-shadow:0 40px 80px -30px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.08);
+    transform:rotate(3deg);
+  }
+
+  /* ---------- chapter rail (desktop) ---------- */
+  .layout{ display:grid; grid-template-columns:220px 1fr; max-width:1100px; margin:0 auto; }
+  .rail{
+    position:sticky; top:90px; align-self:start; height:calc(100vh - 140px);
+    padding:60px 0 40px 28px; overflow-y:auto;
+  }
+  .rail::-webkit-scrollbar{ display:none; }
+  .rail a{
+    display:flex; align-items:baseline; gap:10px; text-decoration:none;
+    font-family:var(--mono); font-size:12px; color:var(--slate-soft);
+    padding:7px 0; border-left:2px solid transparent; padding-left:14px;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  .rail a .n{ font-weight:600; }
+  .rail a.active, .rail a:hover{ color:var(--blue); border-left-color:var(--blue); }
+
+  .content{ min-width:0; padding:70px 0 20px; }
+
+  /* mobile chapter chips */
+  .chips{
+    display:none; gap:8px; overflow-x:auto; padding:16px 28px; margin-top:0;
+    border-bottom:1px solid var(--line); background:var(--paper);
+    position:sticky; top:56px; z-index:100; -webkit-overflow-scrolling:touch;
+  }
+  .chips::-webkit-scrollbar{ display:none; }
+  .chips a{
+    flex:0 0 auto; font-family:var(--mono); font-size:11.5px; font-weight:600;
+    color:var(--slate); background:var(--sky); padding:8px 14px; border-radius:100px;
+    text-decoration:none; white-space:nowrap;
+  }
+
+  /* ---------- chapter blocks ---------- */
+  .chapter{ padding:56px 0; border-bottom:1px solid var(--line); }
+  .chapter:last-of-type{ border-bottom:none; }
+  .chap-eyebrow{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.1em; color:var(--blue);
+    font-weight:600; margin-bottom:12px; display:block;
+  }
+  .chapter h2{
+    font-family:var(--disp); font-weight:600; font-size:clamp(1.6rem,3.4vw,2.2rem);
+    line-height:1.15; margin:0 0 24px; letter-spacing:-0.01em;
+  }
+  .chapter p{ margin:0 0 20px; color:#2A3050; }
+  .chapter ul{ margin:0 0 20px; padding-left:0; list-style:none; }
+  .chapter ul li{
+    position:relative; padding-left:26px; margin-bottom:10px; color:#2A3050;
+  }
+  .chapter ul li::before{
+    content:''; position:absolute; left:0; top:11px; width:7px; height:7px;
+    border-radius:2px; background:var(--blue); transform:rotate(45deg);
+  }
+  .figure{ margin:32px 0; }
+  .figure img{
+    border-radius:16px; border:1px solid var(--line); box-shadow:0 24px 48px -32px rgba(11,19,48,0.35);
+  }
+  .figure figcaption{
+    font-family:var(--mono); font-size:11.5px; color:var(--slate-soft); margin-top:10px;
+    text-align:center; letter-spacing:.02em;
+  }
+  .pull{
+    font-family:var(--body); font-style:italic; font-size:1.35rem; line-height:1.5;
+    color:var(--ink); border-left:3px solid var(--blue); padding:4px 0 4px 24px;
+    margin:32px 0;
+  }
+  .code-line{
+    font-family:var(--mono); font-size:14.5px; background:var(--sky); color:var(--ink);
+    padding:16px 18px; border-radius:10px; margin:20px 0; border:1px solid var(--line);
+  }
+
+  /* vantagens / desvantagens */
+  .pros-cons{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:28px 0; }
+  .pc-card{ border-radius:14px; padding:20px 22px; }
+  .pc-card.pro{ background:var(--mint-bg); border:1px solid rgba(18,150,110,0.18); }
+  .pc-card.con{ background:var(--coral-bg); border:1px solid rgba(209,74,63,0.18); }
+  .pc-card h3{
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    margin:0 0 12px;
+  }
+  .pc-card.pro h3{ color:var(--mint); }
+  .pc-card.con h3{ color:var(--coral); }
+  .pc-card ul{ margin:0; padding:0; list-style:none; }
+  .pc-card li{ font-size:.96rem; padding-left:22px; position:relative; margin-bottom:8px; color:#2A3050; }
+  .pc-card.pro li::before{ content:'✓'; position:absolute; left:0; color:var(--mint); font-weight:700; }
+  .pc-card.con li::before{ content:'✕'; position:absolute; left:0; color:var(--coral); font-weight:700; }
+
+  @media (max-width:640px){ .pros-cons{ grid-template-columns:1fr; } }
+
+  /* ---------- aviso / mensagem final ---------- */
+  .callout{
+    background:var(--sky); border-radius:var(--radius); padding:36px 34px;
+    margin:56px 0; border:1px solid rgba(47,95,224,0.14);
+  }
+  .callout .chap-eyebrow{ margin-bottom:14px; }
+
+  .msgfinal{ background:var(--ink); color:#F4F6FF; padding:80px 28px; }
+  .msgfinal .wrap{ text-align:center; }
+  .msgfinal .eyebrow{ justify-content:center; }
+  .msgfinal h2{
+    font-family:var(--disp); font-weight:600; font-size:clamp(1.7rem,4vw,2.4rem);
+    margin:0 0 24px;
+  }
+  .msgfinal p{ color:#C7CEEC; font-size:1.1rem; max-width:56ch; margin:0 auto 18px; }
+  .house{
+    display:flex; justify-content:center; gap:36px; margin:36px 0; flex-wrap:wrap;
+    font-family:var(--mono); font-size:12.5px; color:#9AA6D6;
+  }
+  .house div{ display:flex; align-items:center; gap:8px; }
+  .house b{ color:#fff; }
+
+  /* ---------- sobre autora ---------- */
+  .autora{ display:grid; grid-template-columns:auto 1fr; gap:24px; align-items:flex-start; }
+  .avatar{
+    width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--blue-light));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--disp);
+    font-weight:700; font-size:1.4rem; flex:0 0 auto;
+  }
+
+  /* ---------- recursos ---------- */
+  .resource{
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+    padding:20px 0; border-bottom:1px solid var(--line);
+  }
+  .resource:last-child{ border-bottom:none; }
+  .resource .rname{ font-family:var(--disp); font-weight:600; font-size:1.1rem; }
+  .resource .rdesc{ color:var(--slate); font-size:.95rem; margin-top:4px; max-width:52ch; }
+  .resource a.rlink{
+    font-family:var(--mono); font-size:12px; color:var(--blue); text-decoration:none;
+    border:1px solid rgba(47,95,224,0.3); padding:8px 14px; border-radius:100px; white-space:nowrap;
+  }
+  .resource a.rlink:hover{ background:var(--sky); }
+
+  /* ---------- projeto final ---------- */
+  .projeto{
+    background:linear-gradient(180deg,var(--ink) 0%, var(--ink-soft) 100%); color:#F4F6FF;
+    padding:96px 28px 100px; text-align:center;
+  }
+  .projeto .eyebrow{ justify-content:center; }
+  .projeto h2{
+    font-family:var(--disp); font-weight:700; font-size:clamp(1.9rem,4.6vw,3rem); margin:0 0 20px;
+  }
+  .projeto p.lede{ color:#C7CEEC; max-width:52ch; margin:0 auto 44px; font-size:1.1rem; }
+  .phone{
+    max-width:300px; margin:0 auto 44px; border-radius:28px; overflow:hidden;
+    border:6px solid rgba(255,255,255,0.12); box-shadow:0 50px 90px -30px rgba(0,0,0,0.7);
+  }
+  .projeto .btn-primary{ font-size:15px; padding:16px 30px; }
+  .projeto .final-note{ margin-top:56px; color:#9AA6D6; font-family:var(--body); font-size:1.05rem; line-height:1.8; }
+  .projeto .final-note b{ color:#fff; }
+  .signature{ margin-top:34px; font-family:var(--disp); font-weight:600; font-size:1.2rem; color:#fff; }
+
+  footer{ padding:34px 28px; text-align:center; font-family:var(--mono); font-size:11.5px; color:var(--slate-soft); }
+
+  /* ---------- reveal animation ---------- */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+    .cursor{ animation:none; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .hero-grid{ grid-template-columns:1fr; gap:44px; }
+    .hero-cover{ max-width:340px; }
+    .hero-cover img{ transform:rotate(1.5deg); }
+    .layout{ grid-template-columns:1fr; }
+    .rail{ display:none; }
+    .chips{ display:flex; }
+    .content{ padding-top:34px; }
+  }
+  @media (max-width:640px){
+    body{ font-size:16.5px; }
+    .hero{ padding:120px 20px 70px; }
+    .wrap, .wrap-wide{ padding:0 20px; }
+    .chapter{ padding:42px 0; }
+    .topnav{ padding:12px 18px; }
+    .autora{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav class="topnav">
+  <div class="brand"><span class="dot"></span> DO PROMPT AO SITE</div>
+  <a class="cta" href="#projeto">Ver o projeto →</a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Guia prático para iniciantes</div>
+      <h1>Do prompt <span>ao site.</span></h1>
+      <p class="lede">Como criar e publicar seu primeiro site usando IA — mesmo sem saber programar. Por Lucimara (Lucy), criadora do Achadinhos da Lilu.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#introducao">Começar a leitura ↓</a>
+        <a class="btn btn-ghost" href="#projeto">Conheça o Achadinhos da Lilu</a>
+      </div>
+      <div class="promptbox">
+        <div class="head"><span></span><span></span><span></span></div>
+        <div class="line"><b>Você:</b> quero criar um site para divulgar produtos de afiliados...</div>
+        <div class="line" style="margin-top:8px;"><b>Você:</b> eu não sei programar. me explique passo a passo<span class="cursor"></span></div>
+      </div>
+    </div>
+    <div class="hero-cover reveal">
+      <img src="images/capa-livro.jpg" alt="Capa do guia Do Prompt ao Site">
+    </div>
+  </div>
+</header>
+
+<!-- ============ CHAPTER CHIPS (mobile) ============ -->
+<div class="chips">
+  <a href="#introducao">Intro</a>
+  <a href="#cap1">01</a>
+  <a href="#cap2">02</a>
+  <a href="#cap3">03</a>
+  <a href="#cap4">04</a>
+  <a href="#cap5">05</a>
+  <a href="#cap6">06</a>
+  <a href="#cap7">07</a>
+  <a href="#cap8">08</a>
+  <a href="#cap9">09</a>
+  <a href="#autora">Autora</a>
+  <a href="#projeto">Projeto</a>
+</div>
+
+<div class="layout">
+  <!-- ============ RAIL (desktop) ============ -->
+  <aside class="rail" id="rail">
+    <a href="#introducao" data-target="introducao"><span class="n">—</span> Introdução</a>
+    <a href="#cap1" data-target="cap1"><span class="n">01</span> A IA parceira</a>
+    <a href="#cap2" data-target="cap2"><span class="n">02</span> Arquivos completos</a>
+    <a href="#cap3" data-target="cap3"><span class="n">03</span> Publicando no GitHub</a>
+    <a href="#cap4" data-target="cap4"><span class="n">04</span> Site não atualizou</a>
+    <a href="#cap5" data-target="cap5"><span class="n">05</span> O que é DNS</a>
+    <a href="#cap6" data-target="cap6"><span class="n">06</span> O que são APIs</a>
+    <a href="#cap7" data-target="cap7"><span class="n">07</span> Por que Supabase</a>
+    <a href="#cap8" data-target="cap8"><span class="n">08</span> Afinando detalhes</a>
+    <a href="#cap9" data-target="cap9"><span class="n">09</span> Não tenha medo</a>
+    <a href="#autora" data-target="autora"><span class="n">—</span> Sobre a autora</a>
+    <a href="#recursos" data-target="recursos"><span class="n">—</span> Recursos</a>
+    <a href="#projeto" data-target="projeto"><span class="n">—</span> O projeto</a>
+  </aside>
+
+  <!-- ============ CONTENT ============ -->
+  <main class="content">
+
+    <section class="chapter reveal" id="introducao">
+      <div class="wrap">
+        <span class="chap-eyebrow">Introdução</span>
+        <h2>Você não precisa aprender a programar.</h2>
+        <p>Se você acha que precisa aprender HTML, CSS e JavaScript para criar um site, eu também pensava assim.</p>
+        <p>A verdade é que eu não sabia absolutamente nada de programação quando comecei. Não entendia códigos, não sabia usar o GitHub, nem fazia ideia do que era GitHub Pages, DNS ou banco de dados.</p>
+        <p>Mesmo assim, eu tinha uma ideia e queria transformá-la em realidade.</p>
+        <p>Foi assim que descobri que não precisava ser programador. Eu precisava aprender a conversar com a IA.</p>
+        <p>Neste guia, vou mostrar exatamente o caminho que percorri para criar meu próprio site usando Inteligência Artificial. Não sou desenvolvedor, apenas alguém que decidiu aprender fazendo.</p>
+        <p class="pull">Se eu consegui, você também consegue.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap1">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 01</span>
+        <h2>A IA será sua parceira</h2>
+        <p>Tudo começa com uma boa conversa.</p>
+        <p>A IA não consegue adivinhar exatamente o que você quer. Quanto mais detalhes você fornecer, melhor será o resultado.</p>
+        <p>Por exemplo:</p>
+        <figure class="figure">
+          <img src="images/anatomia-prompt.jpg" alt="A anatomia do prompt perfeito: contexto, especificações visuais, regra de ouro e formato de saída">
+          <figcaption>A anatomia do prompt perfeito</figcaption>
+        </figure>
+        <p>Depois disso, acrescente algo muito importante:</p>
+        <div class="code-line">"Eu não sei programar e não entendo códigos. Sempre me explique tudo passo a passo. Quando terminar, envie todos os arquivos completos organizados em pastas."</div>
+        <p>Isso faz toda a diferença.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap2">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 02</span>
+        <h2>Recebendo os arquivos completos</h2>
+        <p>Muitas pessoas recebem apenas pequenos trechos de código e acabam ficando perdidas.</p>
+        <p>Por isso, sempre peça à IA:</p>
+        <div class="code-line">"Envie todos os arquivos completos do projeto."</div>
+        <figure class="figure">
+          <img src="images/arquivos-completos.jpg" alt="Comparação entre trechos soltos de código e arquivos completos do projeto">
+          <figcaption>Trechos soltos causam confusão — peça sempre a estrutura completa</figcaption>
+        </figure>
+        <p>Assim você receberá toda a estrutura pronta.</p>
+        <p>Se aparecer algum erro, não tente adivinhar o que fazer. Tire um print da tela, envie para a IA e peça ajuda.</p>
+        <figure class="figure">
+          <img src="images/ciclo-erros.jpg" alt="O ciclo de resolução de erros: o erro, a captura, o envio e a correção">
+          <figcaption>O ciclo de resolução de erros — você é o gerente de qualidade, a IA é o suporte técnico</figcaption>
+        </figure>
+        <p>Sempre que houver alterações importantes, peça novamente os <b>arquivos completos</b>.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap3">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 03</span>
+        <h2>Publicando seu site no GitHub</h2>
+        <p>Depois que a IA entregar todos os arquivos, chegou a hora de publicar seu site.</p>
+        <p>Você aprenderá a:</p>
+        <ul>
+          <li>criar uma conta no GitHub</li>
+          <li>criar um repositório</li>
+          <li>enviar arquivos</li>
+          <li>editar arquivos</li>
+          <li>excluir arquivos</li>
+          <li>fazer alterações simples</li>
+          <li>ativar o GitHub Pages</li>
+        </ul>
+        <p>Mesmo sem saber programação, você conseguirá colocar seu site no ar.</p>
+        <figure class="figure">
+          <img src="images/pipeline-github.jpg" alt="Pipeline do GitHub: arquivos locais, conta e repositório, upload e GitHub Pages">
+          <figcaption>Publicando seu site: o pipeline do GitHub</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap4">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 04</span>
+        <h2>Seu site não atualizou?</h2>
+        <p>Isso aconteceu comigo várias vezes.</p>
+        <p>Você faz alterações no site, envia tudo para o GitHub, mas continua vendo a versão antiga.</p>
+        <p>Na maioria das vezes, isso acontece porque o navegador ainda está usando uma versão salva na memória (cache).</p>
+        <p><b>O que fazer?</b></p>
+        <figure class="figure">
+          <img src="images/diagnostico-cache.jpg" alt="Diagnóstico: meu site não atualizou — fluxo de solução de cache">
+          <figcaption>Diagnóstico: "meu site não atualizou!"</figcaption>
+        </figure>
+        <ul>
+          <li>Atualize a página algumas vezes</li>
+          <li>Se continuar igual, limpe apenas o cache do navegador (não é necessário apagar seus arquivos ou histórico)</li>
+          <li>Depois tente novamente</li>
+          <li>Se ainda assim não funcionar, abra o site em outro navegador</li>
+        </ul>
+        <p>Como esse navegador ainda não possui uma versão salva do site, normalmente você verá a atualização imediatamente.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap5">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 05</span>
+        <h2>O que é DNS?</h2>
+        <p>Quando comecei, também não fazia ideia.</p>
+        <p>Imagine que um site seja uma casa. Toda casa possui um endereço. Na internet, esse endereço normalmente é um conjunto de números.</p>
+        <p>O DNS funciona como uma agenda de contatos. Em vez de decorar números complicados, você digita:</p>
+        <div class="code-line">meusite.com</div>
+        <p>E o DNS encontra o endereço correto. Ele apenas informa para onde seu domínio deve apontar.</p>
+        <figure class="figure">
+          <img src="images/dns-diagrama.jpg" alt="Desmistificando a web: o que é DNS — usuário, DNS como agenda de contatos e servidor">
+          <figcaption>O DNS traduz um nome amigável para um endereço de máquina</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap6">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 06</span>
+        <h2>O que são APIs?</h2>
+        <p>Quando comecei, pensei que precisava pagar várias APIs para meu site funcionar. Mas afinal... o que é uma API?</p>
+        <p>Imagine um restaurante. Você faz o pedido para o garçom. O garçom leva seu pedido até a cozinha. Depois traz sua comida.</p>
+        <p>A API funciona exatamente assim. Ela faz seu site conversar com outro serviço.</p>
+        <figure class="figure">
+          <img src="images/api-restaurante.jpg" alt="Analogia de API como um garçom levando pedidos entre você e o serviço externo">
+          <figcaption>APIs permitem que seu site converse e use recursos de outros sistemas sem que você precise construí-los do zero</figcaption>
+        </figure>
+        <p>Por exemplo: ChatGPT, Gemini, sistemas de pagamento, tradução, mapas, clima, entre muitos outros.</p>
+        <div class="pros-cons">
+          <div class="pc-card pro">
+            <h3>Vantagens</h3>
+            <ul>
+              <li>Adiciona recursos inteligentes</li>
+              <li>Integra outros serviços</li>
+              <li>Economiza muito trabalho</li>
+            </ul>
+          </div>
+          <div class="pc-card con">
+            <h3>Desvantagens</h3>
+            <ul>
+              <li>Muitas APIs são pagas</li>
+              <li>Dependendo da quantidade de usuários, os custos podem aumentar bastante</li>
+            </ul>
+          </div>
+        </div>
+        <p>Por isso, antes de utilizar qualquer API, pergunte para a IA: quais são as vantagens? Quais são as desvantagens? Essa API realmente é necessária para o projeto que estou criando?</p>
+        <p class="pull">Nem sempre a solução mais cara é a melhor.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap7">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 07</span>
+        <h2>Por que escolhi o Supabase?</h2>
+        <p>No meu caso, eu não tinha dinheiro para pagar APIs. Então procurei uma alternativa gratuita. Foi assim que conheci o Supabase.</p>
+        <p>O Supabase é um serviço que ajuda seu site a armazenar informações, como produtos, usuários e outros dados.</p>
+        <div class="pros-cons">
+          <div class="pc-card pro">
+            <h3>Vantagens</h3>
+            <ul>
+              <li>Possui plano gratuito</li>
+              <li>Fácil de configurar</li>
+              <li>Muito usado atualmente</li>
+              <li>Permite criar projetos sem precisar montar um servidor</li>
+            </ul>
+          </div>
+          <div class="pc-card con">
+            <h3>Desvantagens</h3>
+            <ul>
+              <li>O plano gratuito possui limites</li>
+              <li>Dependendo do crescimento do projeto, talvez seja necessário contratar um plano pago</li>
+            </ul>
+          </div>
+        </div>
+        <figure class="figure" style="max-width:320px;">
+          <img src="images/supabase-dados.jpg" alt="Ilustração de banco de dados protegido representando o Supabase">
+          <figcaption>Armazene seus dados com o Supabase</figcaption>
+        </figure>
+        <p>Mesmo com essas limitações, foi suficiente para colocar meu projeto no ar.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap8">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 08</span>
+        <h2>Seu site ainda não ficou como você imaginava?</h2>
+        <p>Isso é completamente normal. Na verdade, essa é a parte mais divertida.</p>
+        <p>Agora você já possui um site funcionando. Basta conversar com a IA. Por exemplo:</p>
+        <figure class="figure">
+          <img src="images/iteracao-visual.jpg" alt="Afinando os detalhes: iteração visual com prompt de ajuste de botão e cor">
+          <figcaption>Afinando os detalhes (iteração visual)</figcaption>
+        </figure>
+        <ul>
+          <li>quero trocar essa cor</li>
+          <li>quero aumentar esse botão</li>
+          <li>quero mudar essa imagem</li>
+          <li>quero uma página nova</li>
+          <li>quero melhorar esse menu</li>
+        </ul>
+        <p>Se não souber explicar, tire um print da tela. Mostre exatamente o que deseja mudar. A IA entenderá muito melhor.</p>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="cap9">
+      <div class="wrap">
+        <span class="chap-eyebrow">Capítulo 09</span>
+        <h2>Não tenha medo de começar</h2>
+        <p>Quando comecei esse projeto...</p>
+        <ul>
+          <li>Eu não sabia HTML.</li>
+          <li>Não sabia CSS.</li>
+          <li>Não sabia JavaScript.</li>
+          <li>Não sabia GitHub.</li>
+          <li>Não sabia GitHub Pages.</li>
+          <li>Não sabia Supabase.</li>
+          <li>Não sabia praticamente nada.</li>
+        </ul>
+        <p>Aprendi errando. Aprendi perguntando. Aprendi tentando novamente.</p>
+        <p class="pull">Minha maior dificuldade não era a programação. Era acreditar que eu conseguiria.</p>
+        <p>Hoje vejo que não precisava saber programar. Precisava aprender a conversar com a IA.</p>
+      </div>
+    </section>
+
+    <section class="reveal">
+      <div class="wrap">
+        <div class="callout">
+          <span class="chap-eyebrow">Aviso</span>
+          <p style="margin:0 0 12px;">Este material foi escrito com base na minha experiência pessoal durante a criação do projeto Achadinhos da Lilu.</p>
+          <p style="margin:0;">As plataformas e ferramentas citadas podem receber atualizações ao longo do tempo. Caso alguma tela ou procedimento esteja diferente, utilize este guia como referência e consulte também a documentação oficial das plataformas.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MENSAGEM FINAL ============ -->
+<section class="msgfinal reveal">
+  <div class="wrap">
+    <div class="eyebrow">Mensagem final</div>
+    <h2>É você quem decide o que quer.<br>A IA apenas ajuda a construir.</h2>
+    <p>Não desista porque você não sabe programação. Eu também não sabia. O importante é ter uma ideia e continuar aprendendo.</p>
+    <div class="house">
+      <div><b>Você</b> é o arquiteto</div>
+      <div><b>A IA</b> é o engenheiro</div>
+    </div>
+    <p>No início eu me sentia completamente perdido. Muitas vezes pensei em desistir. Hoje consegui transformar uma ideia em um site funcionando.</p>
+    <p class="pull" style="color:#fff; border-color:var(--blue-light);">Se eu consegui... você também consegue.</p>
+  </div>
+</section>
+
+<!-- ============ SOBRE A AUTORA ============ -->
+<section class="chapter reveal" id="autora">
+  <div class="wrap" style="max-width:820px; padding-top:64px;">
+    <span class="chap-eyebrow">Sobre a autora</span>
+    <div class="autora">
+      <div class="avatar">L</div>
+      <div>
+        <h2 style="margin-top:0;">Lucimara (Lucy)</h2>
+        <p>Quando comecei esse projeto, eu não sabia HTML, CSS, JavaScript, GitHub ou praticamente nada sobre programação. Eu apenas tinha uma ideia e queria transformá-la em realidade.</p>
+        <p>Depois de muitos erros, pesquisas, testes e inúmeras conversas com Inteligências Artificiais, consegui colocar meu primeiro projeto online.</p>
+        <p>Este guia reúne tudo aquilo que eu gostaria que alguém tivesse me ensinado quando comecei.</p>
+        <p>Meu objetivo é mostrar que você não precisa saber programar para tirar uma ideia do papel. Com curiosidade, dedicação e as ferramentas certas, é possível aprender um passo de cada vez.</p>
+        <p>Espero que este material facilite sua jornada e mostre que você também é capaz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECURSOS ÚTEIS ============ -->
+<section class="chapter reveal" id="recursos">
+  <div class="wrap" style="max-width:820px;">
+    <span class="chap-eyebrow">Recursos úteis</span>
+    <h2>Durante a criação do meu projeto, utilizei estas ferramentas</h2>
+
+    <div class="resource">
+      <div><div class="rname">Claude</div><div class="rdesc">Utilizei para criar a maior parte da estrutura do site, gerar arquivos completos, revisar códigos e orientar cada etapa do desenvolvimento.</div></div>
+      <a class="rlink" href="https://claude.ai" target="_blank" rel="noopener">claude.ai ↗</a>
+    </div>
+    <div class="resource">
+      <div><div class="rname">ChatGPT</div><div class="rdesc">Utilizei para tirar dúvidas, melhorar ideias, revisar textos, explicar conceitos e encontrar soluções quando eu ficava travada.</div></div>
+      <a class="rlink" href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com ↗</a>
+    </div>
+    <div class="resource">
+      <div><div class="rname">GitHub</div><div class="rdesc">Local onde os arquivos do projeto ficam armazenados.</div></div>
+      <a class="rlink" href="https://github.com" target="_blank" rel="noopener">github.com ↗</a>
+    </div>
+    <div class="resource">
+      <div><div class="rname">GitHub Pages</div><div class="rdesc">Serviço gratuito utilizado para publicar o site na internet.</div></div>
+      <a class="rlink" href="https://pages.github.com" target="_blank" rel="noopener">pages.github.com ↗</a>
+    </div>
+    <div class="resource">
+      <div><div class="rname">Supabase</div><div class="rdesc">Utilizei como banco de dados para o projeto, permitindo armazenar informações sem precisar criar um servidor próprio.</div></div>
+      <a class="rlink" href="https://supabase.com" target="_blank" rel="noopener">supabase.com ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONHEÇA O PROJETO ============ -->
+<section class="projeto reveal" id="projeto">
+  <div class="wrap">
+    <div class="eyebrow">Do aprendizado à prática</div>
+    <h2>Conheça o Achadinhos da Lilu</h2>
+    <p class="lede">O projeto surgiu da vontade de criar um site moderno para divulgar produtos de afiliados de forma organizada, simples e acessível. Mais do que um site, ele representa tudo o que aprendi durante essa jornada: pesquisar, testar, errar, corrigir e continuar evoluindo.</p>
+
+    <div class="phone">
+      <img src="images/mockup-achadinhos.jpg" alt="Mockup do site Achadinhos da Lilu em um navegador de celular">
+    </div>
+
+    <a class="btn btn-primary" href="https://achadinhosdalilu.com.br" target="_blank" rel="noopener">🌐 Visitar achadinhosdalilu.com.br</a>
+
+    <div class="final-note">
+      <p>Se você chegou até aqui, espero que este guia tenha mostrado que criar um site é muito mais possível do que parece.</p>
+      <p><b>Comece com uma ideia. Aprenda um passo de cada vez.</b></p>
+      <p>Não espere saber tudo para começar. Comece, e o aprendizado virá durante o caminho.</p>
+      <div class="signature">Lucimara (Lucy) 💙</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  DO PROMPT AO SITE — Guia prático para iniciantes · Achadinhos da Lilu
+</footer>
+
+<script>
+  // progress bar
+  const progress = document.getElementById('progress');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  revealEls.forEach(el=>io.observe(el));
+
+  // active chapter in rail
+  const railLinks = document.querySelectorAll('.rail a');
+  const sections = Array.from(railLinks).map(a=>document.getElementById(a.dataset.target)).filter(Boolean);
+  const railIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      const id = entry.target.id;
+      const link = document.querySelector('.rail a[data-target="'+id+'"]');
+      if(!link) return;
+      if(entry.isIntersecting){
+        railLinks.forEach(l=>l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-40% 0px -50% 0px'});
+  sections.forEach(s=>railIO.observe(s));
+</script>
+
+</body>
+</html>
